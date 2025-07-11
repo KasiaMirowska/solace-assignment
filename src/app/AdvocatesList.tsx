@@ -1,97 +1,87 @@
 "use client";
-
-import { useState } from "react";
 import type { Advocate } from "./types";
+
+interface Props {
+  initialData: Advocate[];
+  currentPage: number;
+  searchQuery: string;
+  total: number;
+  limit: number;
+}
 
 export default function AdvocatesList({
   initialData,
-}: {
-  initialData: Advocate[];
-}) {
-  const [query, setQuery] = useState("");
-  const [filtered, setFiltered] = useState(initialData);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setQuery(searchTerm);
-
-    const newFiltered = initialData.filter((adv) =>
-      Object.values(adv).some((val) =>
-        String(val).toLowerCase().includes(searchTerm)
-      )
-    );
-
-    setFiltered(newFiltered);
-  };
-  const handleButtonClick = () => {
-    alert("clicked- we will figure out if we need it later :)");
-  };
+  currentPage,
+  searchQuery,
+  total,
+  limit,
+}: Props) {
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div>
       <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
+
+      {/* Search form */}
+      <form method="GET" action="/">
         <input
-          placeholder="Search advocates..."
-          value={query}
-          onChange={onChange}
+          type="text"
+          name="search"
+          placeholder="Search..."
+          defaultValue={searchQuery}
           className="mb-4 px-2 py-1 border"
         />
-
-        <button
-          onClick={handleButtonClick}
-          className="mb-4 px-4 py-2 border rounded"
-        >
-          Click Me
+        <button type="submit" className="ml-2 px-4 py-2 border rounded">
+          Search
         </button>
-      </div>
-      <table className="w-full border-collapse border border-gray-300">
+      </form>
+
+      {/* Table */}
+      <table className="w-full border-collapse border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">First Name</th>
-            <th className="border border-gray-300 px-4 py-2">Last Name</th>
-            <th className="border border-gray-300 px-4 py-2">City</th>
-            <th className="border border-gray-300 px-4 py-2">Degree</th>
-            <th className="border border-gray-300 px-4 py-2">Specialties</th>
-            <th className="border border-gray-300 px-4 py-2">Years Exp</th>
-            <th className="border border-gray-300 px-4 py-2">Phone Number</th>
+            <th className="border px-4 py-2">First Name</th>
+            <th className="border px-4 py-2">Last Name</th>
+            <th className="border px-4 py-2">City</th>
+            <th className="border px-4 py-2">Degree</th>
+            <th className="border px-4 py-2">Specialties</th>
+            <th className="border px-4 py-2">Years Exp</th>
+            <th className="border px-4 py-2">Phone</th>
           </tr>
         </thead>
         <tbody>
-          {filtered.map((advocate, i) => (
+          {initialData.map((adv, i) => (
             <tr key={i}>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.firstName}
+              <td className="border px-4 py-2">{adv.firstName}</td>
+              <td className="border px-4 py-2">{adv.lastName}</td>
+              <td className="border px-4 py-2">{adv.city}</td>
+              <td className="border px-4 py-2">{adv.degree}</td>
+              <td className="border px-4 py-2">
+                {Array.isArray(adv.specialties)
+                  ? adv.specialties.join(", ")
+                  : adv.specialties}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.lastName}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.city}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.degree}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {Array.isArray(advocate.specialties)
-                  ? advocate.specialties.join(", ")
-                  : advocate.specialties}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.yearsOfExperience}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {advocate.phoneNumber}
-              </td>
+              <td className="border px-4 py-2">{adv.yearsOfExperience}</td>
+              <td className="border px-4 py-2">{adv.phoneNumber}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <div className="flex gap-2 mt-4">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <a
+            key={i}
+            href={`/?page=${i + 1}&search=${searchQuery}`}
+            className={`px-3 py-1 border rounded ${
+              currentPage === i + 1 ? "bg-blue-200" : ""
+            }`}
+          >
+            {i + 1}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

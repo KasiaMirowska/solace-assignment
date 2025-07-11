@@ -9,3 +9,6 @@ export interface Advocate {
   phoneNumber: string;
   createdAt: string; //verify if we need a date later
 }
+
+type SearchParams = { search?: string };
+export type PageParams = SearchParams & { page?: string };

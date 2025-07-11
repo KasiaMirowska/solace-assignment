@@ -103,22 +103,30 @@
 // }
 
 import AdvocatesList from "./AdvocatesList";
-import type { Advocate } from "./types";
+import type { Advocate, PageParams } from "./types";
 
-export default async function Page() {
-  try {
-    const response = await fetch("http://localhost:3000/api/advocates", {
-      cache: "no-store",
-    });
+export default async function Page(searchParams: PageParams) {
+  const page = parseInt(searchParams?.page || "1");
+  const search = searchParams?.search || "";
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch advocates");
-    }
+  const res = await fetch(
+    `http://localhost:3000/api/advocates?page=${page}&search=${search}`,
+    { cache: "no-store" }
+  );
 
-    const { data }: { data: Advocate[] } = await response.json();
-    return <AdvocatesList initialData={data} />;
-  } catch (e) {
-    console.log("SSR ERROR GETTING DATA", e);
-    return <div>Failed to load advocates. Please try again later</div>;
+  if (!res.ok) {
+    throw new Error("Failed to fetch advocates");
   }
+
+  const { data, total, limit } = await res.json();
+
+  return (
+    <AdvocatesList
+      initialData={data}
+      currentPage={page}
+      searchQuery={search}
+      total={total}
+      limit={limit}
+    />
+  );
 }
