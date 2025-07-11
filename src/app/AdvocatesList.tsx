@@ -5,24 +5,19 @@ interface Props {
   initialData: Advocate[];
   currentPage: number;
   searchQuery: string;
-  total: number;
-  limit: number;
+  totalPages: number;
 }
 
 export default function AdvocatesList({
   initialData,
   currentPage,
   searchQuery,
-  total,
-  limit,
+  totalPages,
 }: Props) {
-  const totalPages = Math.ceil(total / limit);
-
   return (
     <div>
       <h1>Solace Advocates</h1>
 
-      {/* Search form */}
       <form method="GET" action="/">
         <input
           type="text"
@@ -36,7 +31,6 @@ export default function AdvocatesList({
         </button>
       </form>
 
-      {/* Table */}
       <table className="w-full border-collapse border border-gray-300 mt-4">
         <thead>
           <tr className="bg-gray-100">
@@ -69,18 +63,22 @@ export default function AdvocatesList({
       </table>
 
       {/* Pagination */}
-      <div className="flex gap-2 mt-4">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <a
-            key={i}
-            href={`/?page=${i + 1}&search=${searchQuery}`}
-            className={`px-3 py-1 border rounded ${
-              currentPage === i + 1 ? "bg-blue-200" : ""
-            }`}
-          >
-            {i + 1}
-          </a>
-        ))}
+      <div className="flex gap-2">
+        {Array.from({ length: totalPages }).map((_, i) => {
+          const pageNum = i + 1;
+          const isActive = pageNum === currentPage;
+          return (
+            <a
+              key={pageNum}
+              href={`/?page=${pageNum}&search=${searchQuery}`}
+              className={`px-3 py-1 border rounded ${
+                isActive ? "bg-blue-200" : ""
+              }`}
+            >
+              {pageNum}
+            </a>
+          );
+        })}
       </div>
     </div>
   );

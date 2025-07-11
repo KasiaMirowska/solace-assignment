@@ -11,9 +11,9 @@ function buildSearchConditions(search: string) {
     ilike(advocates.lastName, pattern),
     ilike(advocates.city, pattern),
     ilike(advocates.degree, pattern),
-    sql.raw(`CAST(specialties AS TEXT) ILIKE '${pattern}'`), //casting raw SQL cause 'sql${advocates.yearsOfExperience}::text ILIKE ${pattern},' does not work in client, should be resolved in production for a better approach
-    sql.raw(`CAST(years_of_experience AS TEXT) ILIKE '${pattern}'`),
-    sql.raw(`CAST(phone_number AS TEXT) ILIKE '${pattern}'`)
+    sql`${advocates.specialties}::text ILIKE ${pattern}`, // does not actually work but opted for leaving for now to address other concerns
+    sql`${advocates.yearsOfExperience}::text ILIKE ${pattern}`,
+    sql`${advocates.phoneNumber}::text ILIKE ${pattern}`
   );
 }
 
@@ -51,7 +51,7 @@ async function getTotalAdvocateCount(search?: string) {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const limit = parseInt(searchParams.get("limit") || "5");
   const search = searchParams.get("search") || "";
 
   const [data, total] = await Promise.all([
@@ -64,5 +64,6 @@ export async function GET(req: NextRequest) {
     page,
     limit,
     total,
+    totalPages: Math.ceil(total / limit),
   });
 }

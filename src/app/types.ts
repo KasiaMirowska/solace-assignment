@@ -10,5 +10,5 @@ export interface Advocate {
   createdAt: string; //verify if we need a date later
 }
 
-type SearchParams = { search?: string };
-export type PageParams = SearchParams & { page?: string };
+type SearchParams = { search?: string; page?: string };
+export type PageParams = { searchParams?: SearchParams };
