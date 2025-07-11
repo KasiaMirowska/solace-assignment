@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Advocates } from "./types";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocates[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocates[]>([]);
 
+  const hasFetched = useRef<boolean>(false);
+
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     console.log("fetching advocates...");
     const fetchAdvocates = async () => {
       try {
