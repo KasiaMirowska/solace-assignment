@@ -1,4 +1,4 @@
-export interface Advocates {
+export interface Advocate {
   id: string;
   firstName: string;
   lastName: string;
