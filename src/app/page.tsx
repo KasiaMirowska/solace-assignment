@@ -1,7 +1,7 @@
 import AdvocatesList from "./AdvocatesList";
 import type { Advocate, PageParams } from "./types";
 
-export const revalidate = 60; // ← cache page for 60 seconds
+export const revalidate = 60; // to limit rerenders if user refreshes the page
 
 export default async function Page({ searchParams }: PageParams) {
   const page = parseInt(searchParams?.page || "1");

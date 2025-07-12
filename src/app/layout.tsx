@@ -1,22 +1,27 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import StyledComponentsRegistry from "./registry";
+import { Inter, Hedvig_Letters_Serif, Montserrat } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
+const hedvig = Hedvig_Letters_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Solace Candidate Assignment",
   description: "Show us what you got",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={montserrat.className}>
+        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      </body>
     </html>
   );
 }

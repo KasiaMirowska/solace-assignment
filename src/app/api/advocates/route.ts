@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 import { ilike, or, sql, count } from "drizzle-orm";
+import type { AdvocatesResponse } from "@/app/types";
 
 function buildSearchConditions(search: string) {
   const pattern = `%${search.toLowerCase()}%`;
@@ -34,7 +35,12 @@ async function getAdvocates({
     ? query.where(buildSearchConditions(search))
     : query;
 
-  return await filteredQuery.execute();
+  const rawData = await filteredQuery.execute();
+
+  return rawData.map((item) => ({
+    ...item,
+    specialties: Array.isArray(item.specialties) ? item.specialties : [], //deals with db returning jsonb column
+  }));
 }
 
 async function getTotalAdvocateCount(search?: string) {
@@ -59,11 +65,13 @@ export async function GET(req: NextRequest) {
     getTotalAdvocateCount(search),
   ]);
 
-  return NextResponse.json({
+  const response: AdvocatesResponse = {
     data,
     page,
     limit,
     total,
     totalPages: Math.ceil(total / limit),
-  });
+  };
+  console.log("DATA", data);
+  return NextResponse.json(response);
 }
