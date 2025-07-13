@@ -72,6 +72,6 @@ export async function GET(req: NextRequest) {
     total,
     totalPages: Math.ceil(total / limit),
   };
-  console.log("DATA", data);
+
   return NextResponse.json(response);
 }

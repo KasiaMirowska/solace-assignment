@@ -20,7 +20,7 @@ export const SearchForm = styled.form`
 
   input {
     padding: 1em;
-    border-radius: 30px;
+    border-radius: 35px;
     border: 1px solid white;
   }
 
@@ -33,7 +33,7 @@ export const SearchForm = styled.form`
     font-family: "Montserrat", sans-serif;
     border: 1px solid rgb(72, 106, 90);
     background-color: rgb(1, 34, 15);
-    border-radius: 30px;
+    border-radius: 35px;
     color: white;
   }
 `;

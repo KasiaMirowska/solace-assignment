@@ -67,6 +67,7 @@ export default function AdvocatesList({
               <VirtualRow
                 key={virtualRow.key}
                 start={virtualRow.start}
+                data-index={virtualRow.index}
                 ref={rowVirtualizer.measureElement}
               >
                 <Cell $flex={0.5}>{row.firstName}</Cell>
